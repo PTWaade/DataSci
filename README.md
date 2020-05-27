@@ -3,19 +3,20 @@ Repository for Data Science exam at Aarhus University, CogSci, 2020.
 
 This README outlines the role of the different scripts of the analysis.
 
-Note that running the simulation takes days on normal laptops and output huge amounts of data. The scripts extracting information and measures from the simulation data takes hours to run and also output big csvs. The data we extracted from the simulation can be found on: https://clolesen.com/datascience2020.html?fbclid=IwAR3yZaVcQdWyHv5dTEIyKRuT1A9hAxtEkm7Mf-FegpPkOS6Vr0sm3lQOf-g
-
-#### List of all csv files used in the analysis ####
-A lot of data was simulated and manipulated in different ways. Not all data manipulations were used in the final analyses. the following is a list of the csv files used in the final analyses. They can be found on the website above.
-- file.csv
-- file.csv
-- file.csv
-- file.csv
-- file.csv
-- file.csv
+#### Analysis overview ####
+We first ran a simulation using the MABE framework. We then calculated IIT and surprisal measures. We then made the generation scale analysis, and lastle the trial scale time series analysis. Note that running the simulation and the phi calculations takes days on normal laptops and output large amounts of data. One can therefore downloade the processed data in order to do the final analysis. These can be found on: https://clolesen.com/datascience2020.html. See below which files are used for which purposes.
+- fitness_task1.csv
+- fitness_task4.csv
+- trans_data_task1.csv
+- trans_data_task4.csv
+- run_trans_data_task1.csv
+- run_trans_data_task4.csv
+- agent_trans_data_task1.csv
+- agent_trans_data_task4.csv
+- all_avg_data_task1.csv
+- all_avg_data_task4.csv
 - cor_data_task1.csv
 - cor_data_task4.csv
-
 
 
 #### Script for running the simulation ####
@@ -36,21 +37,70 @@ This script used the following files:
 - file.csv
 
 
+#### Script for extracting surprisal measures ####
+Here the different surprisal measures were calculated, using CountStates.py. We produced different files for the two tasks and depending on the surprisal calculation (relative to all states, to states within the run, or to states within the specific agent). It produced the following files:
+- trans_data_task1.csv
+- trans_data_task4.csv
+- run_trans_data_task1.csv
+- run_trans_data_task4.csv
+- agent_trans_data_task1.csv
+- agent_trans_data_task4.csv
+
+From the files:
+- file.csv
+- file.csv
+
+#### Generating Averaged data ####
+In _____, the trial-level data was averaged to make the generation level data used later. This script produced:
+- all_avg_data_task1.csv
+- all_avg_data_task4.csv
+
+From the files:
+- fitness_task1.csv
+- fitness_task4.csv
+- trans_data_task1.csv
+- trans_data_task4.csv
+- run_trans_data_task1.csv
+- run_trans_data_task4.csv
+- agent_trans_data_task1.csv
+- agent_trans_data_task4.csv
+
+
 #### Scripts for analysing how the agents changed across generations ####
-### These scripts were also used to replicate the findings of dude et al. (YYYY).
-In AvgAnalysis.R, Phi, number of concepts and fitness was averaged across all runs to plot their change across generations. The data came from script XXXXX.py. The analysis of this script used the following files:
-- file.csv
-- file.csv
+### These scripts were also used to replicate the findings of Albantakis et al. (2014).
+In AvgAnalysis.R, the replication analysis was made on the generation level of Phi, number of concepts and fitness, and the analysis of the surprisal measures on the generation level. This script used the following files:
+- all_avg_data_task1.csv
+- all_avg_data_task4.csv
 
 
-#### Scripts for investigating the correlation between Phi and surprisal ####
-The timeseries.R script calculated the cross-correlation between Phi and different measures of surprisal. The data came from script XXX. These cross-correlations were then used in CorAnalysis.R. The analysis of this script used the following files:
-- file.csv
-- file.csv
+#### Generating cross-correlations ####
+Here cross-correlations were calculated and stored in a new csv. This was done using timeseries.R. 
 
-In CorAnalysis.R, the cross-correlation between Phi and surprisal conditional on the previous states were plotted at different timelags. The analysis of this script uses the following files:
+It produced the following files:
 - cor_data_task1.csv
 - cor_data_task4.csv.
+- run_cordata_task1.csv
+- run_cordata_task4.csv.
+- agent_cordata_task1.csv
+- agent_cordata_task4.csv.
+
+Using the following files
+- trans_data_task1.csv
+- trans_data_task4.csv
+- run_trans_data_task1.csv
+- run_trans_data_task4.csv
+- agent_trans_data_task1.csv
+- agent_trans_data_task4.csv
+
+#### Scripts for investigating the cross-correlation between Phi and surprisal ####
+In CorAnalysis.R, the cross-correlation between Phi and surprisal conditional on the previous states were investigated. This produced the correlation strength densities across timelags and made the examples found in the Appendix.
+This used the files:
+- cor_data_task1.csv
+- cor_data_task4.csv.
+- run_cordata_task1.csv
+- run_cordata_task4.csv.
+- agent_cordata_task1.csv
+- agent_cordata_task4.csv.
 
 
 
