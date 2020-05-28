@@ -5,38 +5,20 @@ pacman::p_load(data.table, ggplot2, tidyr, rstudioapi)
 #Sets working directory to the folder where this script is located.
 setwd(dirname(getActiveDocumentContext()$path))
 
-
-
 #Get data
-#cor1 = fread("cor_data_task1.csv")
-#cor4 = fread("cor_data_task4.csv")
-#agent_cor1 <- fread("agent_cordata_task1.csv")
-#agent_cor4 <- fread("agent_cordata_task4.csv")
-#run_cor1 <- fread("run_cordata_task1.csv")
-#run_cor4 <- fread("run_cordata_task4.csv")
-#run_cor1 <- fread("run_cordata_task1.csv")
-#run_cor4 = dcor
-run_cor4 <- fread("cor_data_task1.csv")
-run_cor1 <- fread("cor_data_task4.csv")
-
-
-
-#Rename
-#names(run_cor4)[names(run_cor4) == "CCPhi_RunSurCond"] <- "CCPhi_SC"
-#names(run_cor1)[names(run_cor1) == "CCPhi_RunSurLone"] <- "CCPhi_SC"
+cor <- fread("cor_data_task1.csv")
+run_cor <- fread("cor_data_task1.csv")
+agent_cor <- fread("cor_data_task1.csv")
 
 #Remove trials with no phi
-#cor1 = cor1[!(is.na(cor1$CCPhi_SC)),]
-#cor4 = cor4[!(is.na(cor4$CCPhi_SC)),]
-#agent_cor1 <- agent_cor1[!(is.na(agent_cor1$CCPhi_SC)),]
-#agent_cor4 <- agent_cor4[!(is.na(agent_cor4$CCPhi_SC)),]
-#run_cor1 <- run_cor1[!(is.na(run_cor1$CCPhi_SC)),]
-run_cor4 <- run_cor4[!(is.na(run_cor4$CCPhi_SC)),]
-run_cor1 <- run_cor1[!(is.na(run_cor1$CCPhi_SC)),]
+cor <- cor[!(is.na(cor$CCPhi_SC)),]
+run_cor <- run_cor[!(is.na(run_cor$CCPhi_SC)),]
+agent_cor <- agent_cor[!(is.na(agent_cor$CCPhi_SC)),]
 
 #Make surprise characters
-run_cor4$CCPhi_SC = as.character(run_cor4$CCPhi_SC)
-run_cor1$CCPhi_SC = as.character(run_cor1$CCPhi_SC)
+cor$CCPhi_SC = as.character(cor$CCPhi_SC)
+run_cor$CCPhi_SC = as.character(run_cor$CCPhi_SC)
+agent_cor$CCPhi_SC = as.character(agent_cor$CCPhi_SC)
 
 #### Setting up Functions ####
 #Function for unpacking all the correlation data
@@ -144,12 +126,7 @@ makePlotD = function(d_unpacked, firstTaskNR,
   } else{
     return(dplot)
   }
-  
-
 }
-  
-
-
 
 #Function for plotting unpacked data
 #Scalesize can be "max", "free", "free_x" and "free_y".
@@ -194,78 +171,42 @@ plot_fun = function(d_unpacked,
                          guide = guide_legend(override.aes = list(
                            linetype = c("solid", "solid"), shape = c(1,1))))
   }
-  
-  
 }
 
 #### Unpacking data ####
 # #Unpack full datasets
-#all_cor1 <- unpack_cor(cor1)
-#all_cor4 <- unpack_cor(cor4)
-#agent_all_cor1 <- unpack_cor(agent_cor1)
-#agent_all_cor4 <- unpack_cor(agent_cor4)
-#run_all_cor1 <- unpack_cor(run_cor1)
-cor1_unpack <- unpack_cor(run_cor1)
-cor4_unpack <- unpack_cor(run_cor4)
-
-#remove old data frames
-rm(run_cor1, run_cor4)
-
-
-# #Unpack late datasets
-#all_cor1_late <- unpack_cor(cor1[cor1$agent > 60])
-#all_cor4_late <- unpack_cor(cor4[cor4$agent > 60])
-# #Unpack early datasets
-#all_cor1_early <- unpack_cor(cor1[cor1$agent < 30])
-#all_cor4_early <- unpack_cor(cor4[cor4$agent < 30])
-
+cor_unpack <- unpack_cor(cor)
+run_cor_unpack <- unpack_cor(run_cor)
+agent_cor_unpack <- unpack_cor(agent_cor)
 
 #### Plot data ####
-
 ### Make data frame for ggplot
 #d_unpacked is for task 1, d_unpacked2 should be for task 4
-dplot = makePlotD(d_unpacked = cor1_unpack, firstTaskNR = 1,
-          d_unpacked2 = cor4_unpack, secondTaskNR = 4,
-          mergedata = TRUE,
-          lagmin = -32, lagmax = 32)
-
-rm(cor1_unpack, cor4_unpack)
+#Note that we here split by surprisal type instead of task, due to this being a toy example with only one task.
+dplot = makePlotD(d_unpacked = run_cor_unpack, firstTaskNR = "run",
+          d_unpacked2 = agent_cor_unpack, secondTaskNR = "agent",
+          mergedata = TRUE, 
+          lagmin = -32, lagmax = 32) 
 
 ### Plot the data
 #Scalesize can be "max", "free", "free_x" and "free_y". Max uses global maximum for scale limits.
-plot_fun(d_unpacked = dplot, lagmin = -6, lagmax = 5, scalesize = "max", taskcolor = c("black", "#3498DB"), width = 0.8)
-
-
-
-
-
-par(mfrow=c(4,3))
-for (i in -5:5) plot(density(run_all_cor4[,as.character(i)], na.rm = T), main=paste("Lag = ", i, sep = ""), xlab = "Correlation")
-
+plot_fun(d_unpacked = dplot, lagmin = -6, lagmax = 5, #Change this to make a subset of the density plots
+         scalesize = "max", taskcolor = c("black", "#3498DB"), width = 0.8)
 
 ####Find examples from data ####
 #First find examples in cor
-printExamples(cor4[cor4$agent > 60], -0.0001, 0.0001)
-#Run 0 Agent 98 Trial 81
-#Run 8 Agent 100 Trial 68
-printExamples(cor4[cor4$agent > 60], -0.99, -0.95)
-#Run 20 Agent 74 Trial 44 and 46
-#Run 26 Agent 102 Trial 42 and 106
-printExamples(cor4[cor4$agent > 60], 0.90, 0.95)
-# Run 33 Agent 114 Trial 16, 48, 80 and 112
-# Run 32 Agent 99 Trial 29
-#Run 40 Agent 108 Trial 110
+printExamples(cor[cor$agent > 60], -0.0001, 0.0001)
+printExamples(cor[cor$agent > 60], -0.99, -0.95)
+printExamples(cor[cor$agent > 60], 0.90, 0.95)
 
 #Load in transition data
-#tran1 = fread("trans_data_task1.csv")
-#tran4 = fread("trans_data_task4.csv")
+tran = fread("trans_data_task1.csv")
 
-
-# #And plot the phi and surprise relations
-# ggplot(subset(tran4, run == 26 & agent == 102), aes(x = timeStep, y = Phi)) +
-#   geom_line() +
-#   theme_minimal() +
-#   geom_line(aes(y = Runsurprise_cond/10), color = "red") +
-#   facet_wrap(~trial)
+#And plot the phi and surprise fluctuating across the trials on a specific generation of a specific run
+ggplot(subset(tran, run == 26 & agent == 102), aes(x = timeStep, y = Phi)) +
+  geom_line() +
+  theme_minimal() +
+  geom_line(aes(y = surprise_cond/10), color = "red") +
+  facet_wrap(~trial)
 
 
