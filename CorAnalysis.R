@@ -6,9 +6,9 @@ pacman::p_load(data.table, ggplot2, tidyr, rstudioapi)
 setwd(dirname(getActiveDocumentContext()$path))
 
 #Get data
-cor <- fread("cor_data_task1.csv")
-run_cor <- fread("cor_data_task1.csv")
-agent_cor <- fread("cor_data_task1.csv")
+cor <- fread("none_cordata.csv")
+run_cor <- fread("run_cordata.csv")
+agent_cor <- fread("agent_cordata.csv")
 
 #Remove trials with no phi
 cor <- cor[!(is.na(cor$CCPhi_SC)),]
@@ -200,7 +200,9 @@ printExamples(cor[cor$agent > 60], -0.99, -0.95)
 printExamples(cor[cor$agent > 60], 0.90, 0.95)
 
 #Load in transition data
-tran = fread("trans_data_task1.csv")
+tran = fread("trans_data.csv")
+#run_tran = fread("run_trans_data.csv")
+#agent_tran = fread("agent_trans_data.csv")
 
 #And plot the phi and surprise fluctuating across the trials on a specific generation of a specific run
 ggplot(subset(tran, run == 26 & agent == 102), aes(x = timeStep, y = Phi)) +
